@@ -3,83 +3,181 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Play Radio</title>
+    <title>Radio Online</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css"
+    />
     <style>
       body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
+        font-family: "Helvetica", sans-serif;
+        background-color: #f2f2f2;
         margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
       }
 
-      .card {
-        width: 300px;
-        border: 1px solid #ccc;
+      h1 {
+        font-size: 40px;
+        color: #333;
+      }
+
+      select {
+        padding: 12px;
+        font-size: 18px;
+        border: 2px solid #1e90ff;
         border-radius: 5px;
-        padding: 15px;
+        background-color: #fff;
+        color: #555;
+        outline: none;
+      }
+
+      select:hover {
+        border-color: #0073e6;
+      }
+
+      audio {
+        width: 80%;
+        background-color: #fff;
+        border: 2px solid #1e90ff;
+        border-radius: 10px;
+      }
+
+      .button-container {
+        display: flex;
+        align-items: center;
         margin: 10px;
-        text-align: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       }
 
-      .card h3 {
-        font-size: 1.5rem;
-      }
-
-      .card p {
-        font-size: 1rem;
-      }
-
-      .play-button {
-        background-color: #007bff;
+      .button-container button {
+        background-color: #1e90ff;
         color: #fff;
         border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
+        border-radius: 50%;
+        padding: 12px;
+        margin: 10px;
         cursor: pointer;
+        transition: background-color 0.3s;
       }
 
-      .card img {
-        max-width: 100%;
-        height: auto;
+      .button-container button:hover {
+        background-color: #0073e6;
       }
     </style>
   </head>
+
   <body>
-    <div class="card">
-      <img src="download.jpeg" alt="Immagine 1" />
-      <h3>Titolo 1</h3>
-      <p>Descrizione 1</p>
-      <button class="play-button">Play</button>
+    <h1>Radio Online</h1>
+
+    <select id="radioSelect" title="Pilih stasiun radio">
+      <option value="radio1">Radio A</option>
+      <option value="radio2">Radio B</option>
+      <option value="radio3">Radio C</option>
+      <option value="radio4">Radio D</option>
+      <option value="radio5">Radio E</option>
+    </select>
+
+    <audio id="radioPlayer" controls>
+      <source id="radioSource" src="" type="audio/mpeg" />
+    </audio>
+
+    <div class="button-container">
+      <button id="prevChannelButton">
+        <i class="fas fa-backward"></i>
+      </button>
+      <button id="playPauseButton">
+        <i id="playPauseIcon" class="fas fa-play"></i>
+      </button>
+      <button id="nextChannelButton">
+        <i class="fas fa-forward"></i>
+      </button>
     </div>
 
-    <div class="card">
-      <img src="download.jpeg" alt="Immagine 2" />
-      <h3>Titolo 2</h3>
-      <p>Descrizione 2</p>
-      <button class="play-button">Play</button>
-    </div>
+    <script>
+      const radioPlayer = document.getElementById("radioPlayer");
+      const radioSelect = document.getElementById("radioSelect");
+      const radioSource = document.getElementById("radioSource");
+      const playPauseButton = document.getElementById("playPauseButton");
+      const playPauseIcon = document.getElementById("playPauseIcon");
+      const prevChannelButton = document.getElementById("prevChannelButton");
+      const nextChannelButton = document.getElementById("nextChannelButton");
 
-    <div class="card">
-      <img src="download.jpeg" alt="Immagine 3" />
-      <h3>Titolo 3</h3>
-      <p>Descrizione 3</p>
-      <button class="play-button">Play</button>
-    </div>
+      let isPlaying = false;
 
-    <div class="card">
-      <img src="download.jpeg" alt="Immagine 4" />
-      <h3>Titolo 4</h3>
-      <p>Descrizione 4</p>
-      <button class="play-button">Play</button>
-    </div>
+      const radioStreams = {
+        radio1:
+          "http://stream-157.zeno.fm/gaaa0t09ewzuv?zs=H2pMnnlYT5-6ndfQbrTI5w",
+        radio2:
+          "https://rautemusik-de-hz-fal-stream15.radiohost.de/solopiano?ref=radiobrowser",
+        radio3: "https://0n-christmas.radionetz.de/0n-christmas.aac",
+        radio4: "https://0n-christmas.radionetz.de/0n-christmas.mp3",
+        radio5: "https://0n-jazz.radionetz.de/0n-jazz.aac",
+        // Tambahkan URL stasiun radio lainnya di sini
+      };
 
-    <div class="card">
-      <img src="download.jpeg" alt="Immagine 5" />
-      <h3>Titolo 5</h3>
-      <p>Descrizione 5</p>
-      <button class="play-button">Play</button>
-    </div>
+      playPauseButton.addEventListener("click", () => {
+        if (isPlaying) {
+          radioPlayer.pause();
+          playPauseIcon.classList.remove("fa-pause");
+          playPauseIcon.classList.add("fa-play");
+        } else {
+          const selectedRadio = radioSelect.value;
+          radioSource.src = radioStreams[selectedRadio];
+          radioPlayer.load();
+          radioPlayer.play();
+          playPauseIcon.classList.remove("fa-play");
+          playPauseIcon.classList.add("fa-pause");
+        }
+        isPlaying = !isPlaying;
+      });
+
+      prevChannelButton.addEventListener("click", () => {
+        const selectedRadio = radioSelect.value;
+        const radioOptions = radioSelect.options;
+
+        for (let i = 0; i < radioOptions.length; i++) {
+          if (radioOptions[i].value === selectedRadio) {
+            if (i > 0) {
+              radioSelect.value = radioOptions[i - 1].value;
+            }
+            break;
+          }
+        }
+
+        const newSelectedRadio = radioSelect.value;
+        radioSource.src = radioStreams[newSelectedRadio];
+        radioPlayer.load();
+        radioPlayer.play();
+        playPauseIcon.classList.remove("fa-play");
+        playPauseIcon.classList.add("fa-pause");
+        isPlaying = true;
+      });
+
+      nextChannelButton.addEventListener("click", () => {
+        const selectedRadio = radioSelect.value;
+        const radioOptions = radioSelect.options;
+
+        for (let i = 0; i < radioOptions.length; i++) {
+          if (radioOptions[i].value === selectedRadio) {
+            if (i < radioOptions.length - 1) {
+              radioSelect.value = radioOptions[i + 1].value;
+            }
+            break;
+          }
+        }
+
+        const newSelectedRadio = radioSelect.value;
+        radioSource.src = radioStreams[newSelectedRadio];
+        radioPlayer.load();
+        radioPlayer.play();
+        playPauseIcon.classList.remove("fa-play");
+        playPauseIcon.classList.add("fa-pause");
+        isPlaying = true;
+      });
+    </script>
   </body>
 </html>
